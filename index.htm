@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Verification</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .hidden-string {
+            color: #111;
+            font-size: 16px;
+        }
+
+        .visible-string {
+            color: #f00;
+            font-size: 16px;
+        }
+
+        .instructions {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">Join the two visible strings in the input box without spaces. The leftmost string comes first.</div>
+    <div class="input-container">
+        <input type="text" id="verification-input" placeholder="Enter the strings here">
+        <button onclick="verify()">Submit</button>
+    </div>
+
+    <script>
+        const strings = [
+    // Add more random strings as needed
+    'abcdefgh',
+    'ijklmnop',
+    'qrstuvwx',
+    'yzabcdef',
+    'ghijklmn',
+    'opqrstuv',
+    'wxyzabcd'
+];
+
+const randomPosition = () => {
+    const buffer = 100;
+    const x = buffer + Math.random() * (window.innerWidth - 2 * buffer);
+    const y = buffer + Math.random() * (window.innerHeight - 2 * buffer);
+    return { x, y };
+};
+
+const createStringElement = (text, className) => {
+    const element = document.createElement('div');
+    element.textContent = text;
+    element.className = className;
+    const position = randomPosition();
+    element.style.position = 'absolute';
+    element.style.left = `${position.x}px`;
+    element.style.top = `${position.y}px`;
+    return element;
+};
+
+const shuffle = array => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+};
+
+const visibleStrings = shuffle(strings).slice(0, 2);
+const hiddenStrings = strings.filter(s => !visibleStrings.includes(s));
+
+for (const s of hiddenStrings) {
+    document.body.appendChild(createStringElement(s, 'hidden-string'));
+}
+
+const visibleStringElements = [];
+for (const s of visibleStrings) {
+    const element = createStringElement(s, 'visible-string');
+    document.body.appendChild(element);
+    visibleStringElements.push(element);
+}
+
+visibleStringElements.sort((a, b) => parseFloat(a.style.left) - parseFloat(b.style.left));
+const sortedVisibleStrings = visibleStringElements.map(e => e.textContent);
+
+const verify = () => {
+    const input = document.getElementById('verification-input').value;
+    const answer = sortedVisibleStrings.join('');
+
+    if (input === answer) {
+        alert('Verification passed!');
+    } else {
+        alert('Verification failed. Please try again.');
+    }
+};
+
+    </script>
+</body>
+</html>
