@@ -1,7 +1,7 @@
 # olegcaptcha
 An approach to human verification using coordinates and color-value of strings
 
-# Description 
+# description 
   - Webpage randomly allocates coordinates to strings, as well randomly assigning two strings a visible color-value
   - If the user inputs the two visible strings in the manner instructed, they pass the verification 
   
